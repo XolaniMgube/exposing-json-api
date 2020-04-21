@@ -46,7 +46,7 @@ router.get('/viewVisitor/:id', (req, res, next) => {
 // update a single visitor
 router.put('/updateVisitor/:id', (req, res, next) => {
     VisitorModel.findByIdAndUpdate({_id: req.params.id}, req.body).then(() => {
-        Ninja.findOne({_id: req.params.id}).then((visitors) => {
+        VisitorModel.findOne({_id: req.params.id}).then((visitors) => {
             res.send(visitors);
         });
     });
