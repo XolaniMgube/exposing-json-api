@@ -65,7 +65,6 @@ class Visitors {
                 [visitorName, visitorAge, dateOfVisit, timeOfVisit, assistedBy, comments])
                 console.log("Inserted a new row")
             await client.query("COMMIT")
-            // console.log(data.rows)
             return data.rows
         } catch (ex) {
             console.log("Failed to add visitor " + ex)
@@ -77,8 +76,7 @@ class Visitors {
     async deleteAVisitor(visitorId) {
         try {
             await client.query("BEGIN")
-            // let data = await client.query("delete from visitors where visitor_id=$1", [visitorId])
-            let data = await client.query("delete from visitors where visitor_id=$1", [visitorId])
+            let data = await client.query("delete from visitors where visitor_id=$1 returning *", [visitorId])
             console.log("visitor deleted")
             await client.query("COMMIT")
             return data.rows
@@ -94,7 +92,6 @@ class Visitors {
             await client.query("BEGIN")
             let data = await client.query("delete from visitors returning *")
             await client.query("COMMIT")
-            console.log(data.rows)
             return data.rows
         } catch (ex) {
             console.log("Failed to delete visitors" + ex)
@@ -106,9 +103,11 @@ class Visitors {
     async updateVisitor(visitorName, visitorAge, dateOfVisit, timeOfVisit, assistedBy, comments, idToBeUpdated) {
         try {
             await client.query("BEGIN")
-            await client.query("update visitors set visitor_name = $1, visitor_age = $2, date_of_visit = $3, time_of_visit = $4, assisted_by = $5, comments = $6 where visitor_id = $7", [visitorName, visitorAge, dateOfVisit, timeOfVisit, assistedBy, comments, idToBeUpdated])
+            let data = await client.query("update visitors set visitor_name = $1, visitor_age = $2, date_of_visit = $3, time_of_visit = $4, assisted_by = $5, comments = $6 where visitor_id = $7 returning *", [visitorName, visitorAge, dateOfVisit, timeOfVisit, assistedBy, comments, idToBeUpdated])
             console.log("visitor updated")
             await client.query("COMMIT")
+            console.log(data.rows)
+            return data.rows
         } catch (ex) {
             console.log("Failed to update visitor" + ex)
         }
@@ -129,22 +128,12 @@ class Visitors {
 
 }
 
-function endConnection() {  
-    setTimeout(function() {
-        client.end()
-    },
-    3000)
-}
+// function endConnection() {  
+//     setTimeout(function() {
+//         client.end()
+//     },
+//     3000)
+// }
 // endConnection()
-
-// let table = new Visitors()
-// table.addVisitor(
-//     "Xolani",
-//         10,
-//         "10-10-2020",
-//         "20:20",
-//         "Njabulo",
-//         "comment"
-// )
 
 module.exports = Visitors, Client
