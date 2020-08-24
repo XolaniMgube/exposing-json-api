@@ -42,12 +42,18 @@ app.get('/viewVisitor/:id', async(req, res) => {
     res.send(viweSingleVisitor)
 })
 
-app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/index.html');
+app.put('/updateVisitor/:id', async(req, res) => {
+    let id = req.params.id
+    let updateVisitor = await visitorTable.updateVisitor(
+        "Njabulo",
+        7,
+        "12-12-2012",
+        "18:18",
+        "Xolani",
+        "I'm so stressed",
+        id
+    )
 })
-
-
-
 
 app.listen(4000, () => {
     console.log("listening on localhost:4000")
